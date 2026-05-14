@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're my soulmate ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            background: linear-gradient(180deg, #FF69B4 0%, #ffffff 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Modal Styles */
+        .modal-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #FF69B4 0%, #ffffff 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .modal-content {
+            background: linear-gradient(180deg, #FF69B4 0%, #ffffff 100%);
+            padding: 80px 60px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 20, 147, 0.2);
+            max-width: 500px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            animation: modalSlideIn 0.7s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 20, 147, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+        
+        .modal-content:hover {
+            transform: scale(1.08) translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4), 0 0 60px rgba(255, 20, 147, 0.4);
+        }
+        
+        .modal-decorations {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .modal-content h1 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 42px;
+            font-weight: bold;
+            font-style: italic;
+            background: linear-gradient(135deg, #764ba2 0%, #FF1493 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .modal-content .subtitle {
+            color: #999;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .modal-content p {
+            color: #666;
+            font-size: 24px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        
+        .modal-content .cta {
+            color: #FF1493;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 25px;
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+        
+        .modal-stars {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FF1493;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 2s infinite;
+        }
+        
+        .star1 { top: 20px; right: 40px; animation-delay: 0s; }
+        .star2 { top: 100px; right: 20px; animation-delay: 0.5s; }
+        .star3 { bottom: 60px; left: 30px; animation-delay: 1s; }
+        .star4 { bottom: 20px; right: 50px; animation-delay: 1.5s; }
+        
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        /* Heart Page Styles */
+        .heart-page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #FF69B4 0%, #ffffff 100%);
+            gap: 30px;
+            padding: 20px 20px 30px;
+            overflow: hidden;
+        }
+        
+        .heart-page.active {
+            display: flex;
+        }
+        
+        .heart-page.top {
+            justify-content: flex-start;
+            align-items: center;
+            padding: 30px 20px 20px;
+            gap: 16px;
+            transform: scale(0.95);
+            transform-origin: top center;
+        }
+        
+        .heart-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .heart-container.pulsing {
+            transform: scale(1.1);
+        }
+        
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            display: block;
+        }
+        
+        .heart-path {
+            fill: #FF1493;
+            filter: drop-shadow(0 12px 35px rgba(255, 20, 147, 0.5));
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .heart-container:hover .heart-path {
+            filter: drop-shadow(0 18px 45px rgba(255, 20, 147, 0.8));
+        }
+        
+        .heart-container.pulsing .heart-path {
+            animation: heartPulse 0.6s ease;
+        }
+        
+        @keyframes heartPulse {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.15);
+            }
+            50% {
+                transform: scale(1);
+            }
+            75% {
+                transform: scale(1.12);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .heart-text {
+            color: #5a2767;
+            font-size: 18px;
+            font-style: italic;
+            font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-weight: 500;
+            line-height: 1.75;
+            text-align: left;
+            max-width: 760px;
+            padding: 24px 28px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 18px 45px rgba(255, 20, 147, 0.18);
+            letter-spacing: 0.4px;
+            white-space: pre-wrap;
+            opacity: 0;
+            animation: textAppear 0.8s ease forwards;
+            animation-delay: 0.3s;
+        }
+        
+        .heart-text.hidden {
+            display: none;
+        }
+        
+        @keyframes textAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal -->
+    <div class="modal-container" id="modal">
+        <div class="modal-content">
+            <div class="modal-decorations">❤️ ❤️ ❤️</div>
+            <p class="subtitle">For the most gorgeous wife</p>
+            <p class="cta">💗 Click pentru a continua 💗</p>
+            
+            <div class="modal-stars star1"></div>
+            <div class="modal-stars star2"></div>
+            <div class="modal-stars star3"></div>
+            <div class="modal-stars star4"></div>
+        </div>
+    </div>
+    
+    <!-- Heart Page -->
+    <div class="heart-page" id="heartPage">
+        <div class="heart-container" id="heartContainer">
+            <svg class="heart-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                <path class="heart-path" d="M150,270 
+                    C75,220 30,170 30,115
+                    C30,75 60,45 90,45
+                    C110,45 130,55 150,70
+                    C170,55 190,45 210,45
+                    C240,45 270,75 270,115
+                    C270,170 225,220 150,270 Z"/>
+            </svg>
+        </div>
+        <div class="heart-text hidden" id="heartText">Nu știu dacă există cuvinte suficient de puternice ca să descrie ce ai devenit pentru mine. Nu ești doar cea mai frumoasă soție din lume… ești liniștea pe care am căutat-o fără să știu, lumina care a reușit să intre în cele mai întunecate colțuri ale sufletului meu și omul care m-a făcut să cred din nou în iubire adevărată.
+
+Înainte să apari tu, multe lucruri păreau goale, reci sau fără sens. Dar ai venit în viața mea și, fără să îți dai seama, ai schimbat tot. Mi-ai oferit căldură când eram obosit, pace când eram pierdut și iubire într-un mod în care nimeni nu a mai știut să o facă vreodată.
+
+Cu tine am înțeles că „acasă” nu este un loc. Acasă e privirea ta, vocea ta, felul în care mă liniștești doar existând lângă mine. Ești omul care îmi face inima să bată mai liniștit într-o lume atât de agitată.
+
+Și dacă viața mea ar începe din nou de o mie de ori, dintre milioane de oameni, tot pe tine te-aș alege. De fiecare dată. Fără ezitare. Pentru că tu nu ai adus doar iubire în viața mea… ai adus sens.
+
+Te iubesc mai profund decât voi putea spune vreodată.</div>
+    </div>
+    
+    <script>
+        const modal = document.getElementById('modal');
+        const heartPage = document.getElementById('heartPage');
+        const heartContainer = document.getElementById('heartContainer');
+        const heartText = document.getElementById('heartText');
+        
+        // Click modal to go to heart page
+        modal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            heartPage.classList.add('active');
+        });
+        
+        // Click heart to pulse, move to top, and show text
+        heartContainer.addEventListener('click', () => {
+            heartContainer.classList.add('pulsing');
+            heartPage.classList.add('top');
+            heartText.classList.remove('hidden');
+            
+            // Remove pulsing class after animation ends
+            setTimeout(() => {
+                heartContainer.classList.remove('pulsing');
+            }, 600);
+        });
+    </script>
+</body>
+</html>
