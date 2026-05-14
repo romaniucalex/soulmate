@@ -20,6 +20,19 @@
             background: linear-gradient(180deg, #FF69B4 0%, #ffffff 100%);
             font-family: 'Arial', sans-serif;
             overflow: hidden;
+            opacity: 0;
+            animation: pageFadeIn 0.8s ease forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         /* Modal Styles */
@@ -36,6 +49,11 @@
             height: 100%;
             z-index: 10;
             animation: fadeIn 0.5s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .modal-container.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
         }
         
         @keyframes fadeIn {
@@ -177,7 +195,7 @@
         
         /* Heart Page Styles */
         .heart-page {
-            display: none;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -186,10 +204,19 @@
             gap: 30px;
             padding: 20px 20px 30px;
             overflow: hidden;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease, visibility 0s linear 0.6s;
         }
         
         .heart-page.active {
-            display: flex;
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            transition-delay: 0s;
         }
         
         .heart-page.top {
@@ -256,6 +283,29 @@
             }
         }
         
+        .heart-label {
+            color: #ff1f7a;
+            font-size: 28px;
+            font-style: italic;
+            font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 14px 24px;
+            box-shadow: 0 14px 35px rgba(255, 20, 147, 0.16);
+            opacity: 0;
+            animation: labelAppear 0.7s ease forwards;
+            animation-delay: 0.2s;
+            max-width: 600px;
+            margin-top: -10px;
+        }
+        
+        .heart-label.hidden {
+            display: none;
+        }
+        
         .heart-text {
             color: #5a2767;
             font-size: 18px;
@@ -278,6 +328,17 @@
         
         .heart-text.hidden {
             display: none;
+        }
+
+        @keyframes labelAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @keyframes textAppear {
@@ -320,6 +381,7 @@
                     C270,170 225,220 150,270 Z"/>
             </svg>
         </div>
+        <div class="heart-label hidden" id="heartLabel">Tangled up with you</div>
         <div class="heart-text hidden" id="heartText">Nu știu dacă există cuvinte suficient de puternice ca să descrie ce ai devenit pentru mine. Nu ești doar cea mai frumoasă soție din lume… ești liniștea pe care am căutat-o fără să știu, lumina care a reușit să intre în cele mai întunecate colțuri ale sufletului meu și omul care m-a făcut să cred din nou în iubire adevărată.
 
 Înainte să apari tu, multe lucruri păreau goale, reci sau fără sens. Dar ai venit în viața mea și, fără să îți dai seama, ai schimbat tot. Mi-ai oferit căldură când eram obosit, pace când eram pierdut și iubire într-un mod în care nimeni nu a mai știut să o facă vreodată.
@@ -330,24 +392,51 @@ Cu tine am înțeles că „acasă” nu este un loc. Acasă e privirea ta, voce
 
 Te iubesc mai profund decât voi putea spune vreodată.</div>
     </div>
-    
+    <div id="playerContainer" style="display:none;"></div>
     <script>
         const modal = document.getElementById('modal');
         const heartPage = document.getElementById('heartPage');
         const heartContainer = document.getElementById('heartContainer');
+        const heartLabel = document.getElementById('heartLabel');
         const heartText = document.getElementById('heartText');
+        const playerContainer = document.getElementById('playerContainer');
+        const youtubeVideoId = 'Y5m1R4pbnDM';
         
-        // Click modal to go to heart page
+        function playYouTube() {
+            let iframe = document.getElementById('musicFrame');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'musicFrame';
+                iframe.width = '0';
+                iframe.height = '0';
+                iframe.style.border = '0';
+                iframe.style.position = 'absolute';
+                iframe.style.left = '-9999px';
+                iframe.style.top = '0';
+                iframe.allow = 'autoplay; encrypted-media';
+                iframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&controls=0&loop=1&playlist=${youtubeVideoId}&rel=0&modestbranding=1`;
+                playerContainer.appendChild(iframe);
+            } else {
+                iframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&controls=0&loop=1&playlist=${youtubeVideoId}&rel=0&modestbranding=1`;
+            }
+        }
+        
+        // Click modal to go to heart page with transition
         modal.addEventListener('click', () => {
-            modal.style.display = 'none';
-            heartPage.classList.add('active');
+            modal.classList.add('fade-out');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                heartPage.classList.add('active');
+            }, 500);
         });
         
-        // Click heart to pulse, move to top, and show text
+        // Click heart to pulse, move to top, show label, show text and play YouTube audio
         heartContainer.addEventListener('click', () => {
             heartContainer.classList.add('pulsing');
             heartPage.classList.add('top');
+            heartLabel.classList.remove('hidden');
             heartText.classList.remove('hidden');
+            playYouTube();
             
             // Remove pulsing class after animation ends
             setTimeout(() => {
